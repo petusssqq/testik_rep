@@ -1,0 +1,252 @@
+[
+    {
+        "mainParam": 3.0,
+        "name": "mango",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 1.0,
+        "name": "mango",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 1.0,
+        "name": "kiwi",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 1.0,
+        "name": "kiwi",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 3.0,
+        "name": "kiwi",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 3.0,
+        "name": "kiwi",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 6.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 8.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 6.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 6.0,
+        "name": "hello",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 3.0,
+        "name": "grape",
+        "secondaryParam": 9.0
+    },
+    {
+        "mainParam": 3.0,
+        "name": "grape",
+        "secondaryParam": 9.0
+    },
+    {
+        "mainParam": 1.0,
+        "name": "first",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 3.0,
+        "name": "first",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 9.0,
+        "name": "first",
+        "secondaryParam": 1.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 18.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 6.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 8.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 8.0,
+        "name": "banana",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 12.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 18.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 8.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 4.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 2.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    },
+    {
+        "mainParam": 6.0,
+        "name": "apple",
+        "secondaryParam": 4.0
+    }
+]

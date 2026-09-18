@@ -1,0 +1,512 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <cmath>
+#include <memory>
+#include <vector>
+
+using namespace std;
+
+// Абстрактный базовый класс стека
+class Stack {
+public:
+    virtual ~Stack() = default;
+    
+    virtual void push(double value) = 0;
+    virtual double pop() = 0;
+    
+    virtual bool isFull() const = 0;
+    virtual bool isEmpty() const = 0;
+    virtual double top() const = 0;
+    
+    virtual Stack* clone() const = 0;
+    virtual Stack* move() = 0;
+};
+
+// Реализация стека на динамическом массиве
+class ArrayStack : public Stack {
+private:
+    double* data;
+    int capacity; // максимальный размер массива
+    int topIndex; // индекс вершины (-1 если пуст)
+    
+public:
+    ArrayStack(int size = 100) : capacity(size), topIndex(-1) {
+        data = new double[capacity];
+    }
+    
+    // Конструктор копирования
+    ArrayStack(const ArrayStack& other) : capacity(other.capacity), topIndex(other.topIndex) {
+        data = new double[capacity];
+        for (int i = 0; i <= topIndex; ++i) {
+            data[i] = other.data[i];
+        }
+    }
+    
+    // Конструктор перемещения
+    ArrayStack(ArrayStack&& other) noexcept 
+        : data(other.data), capacity(other.capacity), topIndex(other.topIndex) {
+        other.data = nullptr;
+        other.capacity = 0;
+        other.topIndex = -1;
+    }
+    
+    ~ArrayStack() override {
+        delete[] data;
+    }
+    
+    ArrayStack& operator=(const ArrayStack& other) {
+        if (this != &other) {
+            delete[] data;
+            capacity = other.capacity;
+            topIndex = other.topIndex;
+            data = new double[capacity];
+            for (int i = 0; i <= topIndex; ++i) {
+                data[i] = other.data[i];
+            }
+        }
+        return *this;
+    }
+    
+    ArrayStack& operator=(ArrayStack&& other) noexcept {
+        if (this != &other) {
+            delete[] data;
+            data = other.data;
+            capacity = other.capacity;
+            topIndex = other.topIndex;
+            other.data = nullptr;
+            other.capacity = 0;
+            other.topIndex = -1;
+        }
+        return *this;
+    }
+    
+    void push(double value) override {
+        if (isFull()) {
+            throw overflow_error("Стек переполнен");
+        }
+        data[++topIndex] = value;
+    }
+    
+    double pop() override {
+        if (isEmpty()) {
+            throw underflow_error("Стек пуст");
+        }
+        return data[topIndex--];
+    }
+    
+    bool isFull() const override {
+        return topIndex == capacity - 1;
+    }
+    
+    bool isEmpty() const override {
+        return topIndex == -1;
+    }
+    
+    double top() const override {
+        if (isEmpty()) {
+            throw underflow_error("Стек пуст");
+        }
+        return data[topIndex];
+    }
+    
+    Stack* clone() const override {
+        return new ArrayStack(*this);
+    }
+    
+    Stack* move() override {
+        return new ArrayStack(std::move(*this));
+    }
+};
+
+// Реализация стека на связанном списке
+class LinkedStack : public Stack {
+private:
+    struct Node {
+        double data;
+        Node* next;
+        Node(double val, Node* nxt = nullptr) : data(val), next(nxt) {}
+    };
+    
+    Node* topNode; // указатель на вершину
+    int count;     // текущее количество элементов
+    int maxSize;   // максимальный размер
+    
+public:
+    LinkedStack(int size = 100) : topNode(nullptr), count(0), maxSize(size) {}
+    
+    // Конструктор копирования (глубокое копирование)
+    LinkedStack(const LinkedStack& other) : topNode(nullptr), count(0), maxSize(other.maxSize) {
+        Node* current = other.topNode;
+        Node* prev = nullptr;
+        
+        while (current != nullptr) {
+            Node* newNode = new Node(current->data);
+            if (prev == nullptr) {
+                topNode = newNode;
+            } else {
+                prev->next = newNode;
+            }
+            prev = newNode;
+            current = current->next;
+            count++;
+        }
+    }
+    
+    // Конструктор перемещения
+    LinkedStack(LinkedStack&& other) noexcept 
+        : topNode(other.topNode), count(other.count), maxSize(other.maxSize) {
+        other.topNode = nullptr;
+        other.count = 0;
+    }
+    
+    ~LinkedStack() override {
+        while (!isEmpty()) {
+            pop();
+        }
+    }
+    
+    LinkedStack& operator=(const LinkedStack& other) {
+        if (this != &other) {
+            while (!isEmpty()) {
+                pop();
+            }
+            
+            maxSize = other.maxSize;
+            Node* current = other.topNode;
+            Node* prev = nullptr;
+            
+            while (current != nullptr) {
+                Node* newNode = new Node(current->data);
+                if (prev == nullptr) {
+                    topNode = newNode;
+                } else {
+                    prev->next = newNode;
+                }
+                prev = newNode;
+                current = current->next;
+                count++;
+            }
+        }
+        return *this;
+    }
+    
+    LinkedStack& operator=(LinkedStack&& other) noexcept {
+        if (this != &other) {
+            while (!isEmpty()) {
+                pop();
+            }
+            
+            topNode = other.topNode;
+            count = other.count;
+            maxSize = other.maxSize;
+            
+            other.topNode = nullptr;
+            other.count = 0;
+        }
+        return *this;
+    }
+    
+    void push(double value) override {
+        if (isFull()) {
+            throw overflow_error("Стек переполнен");
+        }
+        topNode = new Node(value, topNode); // новый узел становится вершиной
+        count++;
+    }
+    
+    double pop() override {
+        if (isEmpty()) {
+            throw underflow_error("Стек пуст");
+        }
+        Node* temp = topNode;
+        double value = temp->data;
+        topNode = topNode->next; // перемещаем вершину на следующий узел
+        delete temp;
+        count--;
+        return value;
+    }
+    
+    bool isFull() const override {
+        return count >= maxSize;
+    }
+    
+    bool isEmpty() const override {
+        return topNode == nullptr;
+    }
+    
+    double top() const override {
+        if (isEmpty()) {
+            throw underflow_error("Стек пуст");
+        }
+        return topNode->data;
+    }
+    
+    Stack* clone() const override {
+        return new LinkedStack(*this);
+    }
+    
+    Stack* move() override {
+        return new LinkedStack(std::move(*this));
+    }
+};
+
+// Калькулятор префиксных выражений
+class PrefixCalculator {
+private:
+    Stack* stack;
+    
+    bool isOperator(char c) const {
+        return c == '+' || c == '-' || c == '*' || c == '/';
+    }
+    
+    double applyOperator(char op, double a, double b) const {
+        switch (op) {
+            case '+': return a + b;
+            case '-': return a - b;
+            case '*': return a * b;
+            case '/': 
+                if (b == 0) throw runtime_error("Деление на ноль");
+                return a / b;
+            default: throw runtime_error("Неизвестная операция");
+        }
+    }
+    
+    // Проверка, является ли строка числом
+    bool isNumber(const string& token) const {
+        if (token.empty()) return false;
+        
+        bool hasDecimalPoint = false;
+        int start = 0;
+        
+        if (token[0] == '-') {
+            if (token.length() == 1) return false;
+            start = 1;
+        }
+        
+        for (size_t i = start; i < token.length(); i++) {
+            if (token[i] == '.') {
+                if (hasDecimalPoint) return false;
+                hasDecimalPoint = true;
+            } else if (!isdigit(token[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    double parseNumber(const string& token) const {
+        return stod(token);
+    }
+    
+public:
+    PrefixCalculator(Stack* s) : stack(s) {}
+    
+    // Основной метод вычисления префиксного выражения
+    double evaluate(const string& expression) {
+        // Разбор выражения на токены
+        vector<string> tokens;
+        string currentToken;
+        
+        for (char c : expression) {
+            if (c == ' ') {
+                if (!currentToken.empty()) {
+                    tokens.push_back(currentToken);
+                    currentToken.clear();
+                }
+            }
+            else if (isOperator(c)) {
+                if (!currentToken.empty()) {
+                    tokens.push_back(currentToken);
+                    currentToken.clear();
+                }
+                tokens.push_back(string(1, c));
+            }
+            else {
+                currentToken += c;
+            }
+        }
+        
+        if (!currentToken.empty()) {
+            tokens.push_back(currentToken);
+        }
+        
+        cout << "Распознанные символы: ";
+        for (const auto& token : tokens) {
+            cout << "'" << token << "' ";
+        }
+        cout << endl;
+        
+        // Вычисление: проходим справа налево
+        for (int i = tokens.size() - 1; i >= 0; --i) {
+            const string& current = tokens[i];
+            
+            if (isNumber(current)) {
+                stack->push(parseNumber(current));
+                cout << "Загружено число: " << parseNumber(current) << endl;
+            }
+            else if (current.length() == 1 && isOperator(current[0])) {
+                if (stack->isEmpty()) {
+                    throw runtime_error("Недостаточно операндов для операции " + current);
+                }
+                double a = stack->pop();
+                
+                if (stack->isEmpty()) {
+                    throw runtime_error("Недостаточно операндов для операции " + current);
+                }
+                double b = stack->pop();
+                
+                double result = applyOperator(current[0], a, b);
+                stack->push(result);
+                cout << "Выполнена операция " << current[0] << " " << a << " " << b << " = " << result << endl;
+            }
+            else {
+                throw runtime_error("Некорректный символ: " + current);
+            }
+        }
+        
+        if (stack->isEmpty()) {
+            throw runtime_error("Некорректное выражение: нет результата");
+        }
+        
+        double finalResult = stack->pop();
+        
+        if (!stack->isEmpty()) {
+            throw runtime_error("Некорректное выражение: слишком много операндов");
+        }
+        
+        return finalResult;
+    }
+};
+
+// Демонстрация возможностей стеков
+void demonstrateStackFeatures() {
+    cout << "\nArrayStack" << endl;
+    ArrayStack stack1(5);
+    
+    cout << "Добавление элементов:" << endl;
+    for (int i = 1; i <= 3; ++i) {
+        stack1.push(i * 1.5);
+        cout << "  Добавлено: " << i * 1.5 << ", Вершина: " << stack1.top() << endl;
+    }
+    
+    ArrayStack stack2 = stack1; // копирование
+    
+    cout << "Извлечение из stack2: ";
+    while (!stack2.isEmpty()) {
+        cout << stack2.pop() << " ";
+    }
+    cout << endl;
+    
+    ArrayStack stack3 = move(stack1); // перемещение
+    cout << "stack1 пуст: " << boolalpha << stack1.isEmpty() << endl;
+    cout << "Извлечение из stack3: ";
+    while (!stack3.isEmpty()) {
+        cout << stack3.pop() << " ";
+    }
+    cout << endl;
+    
+    cout << "\nLinkedStack" << endl;
+    LinkedStack stack4(5);
+    
+    cout << "Добавление элементов:" << endl;
+    for (int i = 1; i <= 3; ++i) {
+        stack4.push(i * 2.5);
+        cout << "  Добавлено: " << i * 2.5 << ", Вершина: " << stack4.top() << endl;
+    }
+    
+    cout << "Извлечение из LinkedStack: ";
+    while (!stack4.isEmpty()) {
+        cout << stack4.pop() << " ";
+    }
+    cout << endl;
+}
+
+// Демонстрация работы калькулятора на примерах
+void demonstratePrefixExamples() {
+    vector<string> examples = {
+        "+5 3.5",                   // 5 + 3.5 = 8.5
+        "*+2.5 3 4",                // (2.5 + 3) * 4 = 22
+    };
+    
+    cout << "\nВычисления с использованием ArrayStack:" << endl;
+    for (const auto& expr : examples) {
+        try {
+            ArrayStack stack(100);
+            PrefixCalculator calculator(&stack);
+            double result = calculator.evaluate(expr);
+            cout << expr << " = " << result << endl;
+        } catch (const exception& e) {
+            cout << "Ошибка при вычислении '" << expr << "': " << e.what() << endl;
+        }
+    }
+    
+    cout << "\nВычисления с использованием LinkedStack:" << endl;
+    for (const auto& expr : examples) {
+        try {
+            LinkedStack stack(100);
+            PrefixCalculator calculator(&stack);
+            double result = calculator.evaluate(expr);
+            cout << expr << " = " << result << endl;
+        } catch (const exception& e) {
+            cout << "Ошибка при вычислении '" << expr << "': " << e.what() << endl;
+        }
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+    demonstrateStackFeatures();
+    demonstratePrefixExamples();
+    
+    cout << "Выберите реализацию стека:" << endl;
+    cout << "1. На основе массива" << endl;
+    cout << "2. На основе связанного списка" << endl;
+    
+    int choice;
+    cin >> choice;
+    cin.ignore();
+    
+    Stack* stack = nullptr;
+    if (choice == 1) {
+        stack = new ArrayStack(100);
+    } else {
+        stack = new LinkedStack(100);
+    }
+    
+    PrefixCalculator calculator(stack);
+    
+    cout << "\nВведите префиксное выражение:" << endl;
+    cout << "Пример: *+2.5 3 4" << endl;
+    
+    string expression;
+    while (true) {
+        cout << "\n> ";
+        getline(cin, expression);
+        
+        if (expression == "q" || expression == "Q") {
+            break;
+        }
+        
+        if (expression.empty()) {
+            continue;
+        }
+        
+        try {
+            double result = calculator.evaluate(expression);
+            cout << "Результат: " << result << endl;
+        }
+        catch (const exception& e) {
+            cout << "Ошибка: " << e.what() << endl;
+        }
+        
+        // Очистка стека перед следующим выражением
+        while (!stack->isEmpty()) {
+            stack->pop();
+        }
+    }
+    
+    delete stack;
+    
+    return 0;
+}
